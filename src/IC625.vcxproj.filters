@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="hw_glew.cpp">
+      <Filter>glew/glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_glfw.cpp">
+      <Filter>glew/glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_load_shader.cpp">
+      <Filter>shader</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_object.cpp">
+      <Filter>object/tile</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_tile_line.cpp">
+      <Filter>object/tile</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_random.cpp">
+      <Filter>etc</Filter>
+    </ClCompile>
+    <ClCompile Include="hw_shape.cpp">
+      <Filter>etc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment_shader.glsl">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="vertex_shader.glsl">
+      <Filter>shader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="glew/glfw">
+      <UniqueIdentifier>{721282a5-5d8f-4208-8bc6-277da2ed8650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{fac96efc-8ef3-40d0-bd29-d8e14e9ff7ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object/tile">
+      <UniqueIdentifier>{45490859-9219-40a2-99a5-26a0dd2014ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="etc">
+      <UniqueIdentifier>{4ab9b7c0-40ab-48c9-9760-f917d769e823}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
