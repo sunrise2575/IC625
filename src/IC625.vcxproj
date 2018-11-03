@@ -19,21 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.h" />
+    <ClCompile Include="src\asset.cpp" />
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\global_var.cpp" />
+    <ClCompile Include="src\instance.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\map.cpp" />
+    <ClCompile Include="src\object_loader.cpp" />
+    <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment_shader.glsl" />
-    <None Include="vertex_shader.glsl" />
+    <ClInclude Include="src\asset.h" />
+    <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\global_var.h" />
+    <ClInclude Include="src\instance.h" />
+    <ClInclude Include="src\map.h" />
+    <ClInclude Include="src\object_loader.h" />
+    <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hw_glew.cpp" />
-    <ClCompile Include="hw_glfw.cpp" />
-    <ClCompile Include="hw_load_shader.cpp" />
-    <ClCompile Include="hw_object.cpp" />
-    <ClCompile Include="hw_random.cpp" />
-    <ClCompile Include="hw_shape.cpp" />
-    <ClCompile Include="hw_tile_line.cpp" />
-    <ClCompile Include="main.cpp" />
+    <None Include="src\texture_fragment_shader.glsl" />
+    <None Include="src\transform_vertex_shader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -61,6 +67,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -107,6 +114,9 @@
       <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
