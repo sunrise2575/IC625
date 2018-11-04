@@ -88,6 +88,11 @@ void map_t::find_major_and_minor_max() {
 
 void map_t::make_player() {
 	this->player.assign_asset(asset_key_t{ this->player_major, 1 });
+	this->player.scale(glm::vec3(0.8, 0.8, 0.8));
+	this->player_return_to_start();
+}
+
+void map_t::player_return_to_start() {
 	this->player.place(glm::vec3(this->grid_x(this->x / 2), this->grid_y(0), 0.0));
 	this->player_x = this->x / 2;
 	this->player_y = 0;
@@ -175,16 +180,15 @@ void map_t::generate(const int x, const int y) {
 	}
 
 	// place ground object
-	for (int j = 0; j < this->y; j++) {
-		for (int i = 0; i < this->x; i++) {
+	for (int j = 0; j < (int)this->y; j++) {
+		for (int i = 0; i < (int)this->x; i++) {
 			if (this->ground_or_road[j]) {
 				this->grounds[j][i].assign_asset(asset_key_t{ this->ground_major, 1 });
 			}
 			else {
 				this->grounds[j][i].assign_asset(asset_key_t{ this->road_major, 1 });
 			}
-			this->grounds[j][i].change_scale(
-				glm::vec3(GRID_SIZE, 0.01, GRID_SIZE));
+			this->grounds[j][i].scale(glm::vec3(GRID_SIZE, 0.01, GRID_SIZE));
 			this->grounds[j][i].place(glm::vec3((float)i*GRID_SIZE, (float)j*GRID_SIZE, -0.02));
 		}
 	}
@@ -240,8 +244,31 @@ void map_t::update_vehicle() {
 	}
 }
 
+bool map_t::is_player_dead(instance_t& opponent) {
+	asset_value_t& other = this->assets->find(opponent.get_asset_key())->second;
+	asset_value_t& player = this->assets->find(this->player.get_asset_key())->second;
+	
+	float player_scale = this->player.get_scale().z;
+	float other_scale = this->player.get_scale().z;
+
+	float player_pos = this->player.get_pos().x;
+	float other_pos = opponent.get_pos().x;
+
+	float player_lower = player_pos + player.z_min * player_scale;
+	float player_upper = player_pos + player.z_max * player_scale;
+	float other_lower = other_pos + other.z_min * other_scale;
+	float other_upper = other_pos + other.z_max * other_scale;
+
+	if (other_upper < player_lower) {
+		return false;
+	}
+	if (other_lower > player_upper) {
+		return false;
+	}
+	return true;
+}
+
 void map_t::draw(const shader_id_t& shader_id) {
-	this->player.draw(*this->assets, shader_id);
 
 	for (auto& i : this->grounds) {
 		for (auto& j : i) {
@@ -255,11 +282,14 @@ void map_t::draw(const shader_id_t& shader_id) {
 		}
 	}
 
+	this->player.draw(*this->assets, shader_id);
+
 	for (auto& i : this->vehicles) {
 		for (auto& j : i) {
 			j.draw(*this->assets, shader_id);
 		}
 	}
+
 }
 
 void map_t::player_keyinput_move(GLFWwindow *&window) {
@@ -314,4 +344,13 @@ void map_t::player_keyinput_move(GLFWwindow *&window) {
 		}
 	}
 	this->kstate.d_old = this->kstate.d_new;
+}
+
+void map_t::dead_check() {
+	for (auto& i : this->vehicles[this->player_y]) {
+		if (this->is_player_dead(i)) {
+			printf("You're dead! Max score: %d\n", this->player_y);
+			this->player_return_to_start();
+		}
+	}
 }

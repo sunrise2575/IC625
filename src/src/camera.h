@@ -15,27 +15,27 @@ private:
 	glm::vec3 pos; 
 	glm::mat4 proj, view, model;
 
+	int mode;
+
 	// bind
 	map_t* map;
-	instance_t* inst;
-	glm::vec3 pos_from_inst;
+	instance_t* target;
+	glm::vec3 pos_from_target;
 
 	float h_angle, v_angle; // camera angle
 	float mouse_speed, move_speed; // camera movement
 	double mouse_x, mouse_y;
+	void proj_ortho();
+	void proj_persp_first();
+	void proj_persp_third();
 public:
 	camera_t();
 	~camera_t() {}
 
 	void bind_map(map_t *map);
-	void set_pos_from_inst(const glm::vec3 &vec);
-	void proj_ortho();
-	void proj_persp_first();
-	void proj_persp_third();
-	void look_player();
-	void look_anywhere_mouse(GLFWwindow *&window);
-	void keyboard_moving(GLFWwindow *&window);
+	void look_target(GLFWwindow *&window);
 	void place_camera(const shader_id_t &shader_id);
+	void change_proj(GLFWwindow *&window);
 };
 
 

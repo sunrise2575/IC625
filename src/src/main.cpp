@@ -15,6 +15,8 @@
 #include "map.h"
 #include "global_var.h"
 
+#define __ORTHO false 
+
 static void initialize(GLFWwindow *&window) {
 	// Initialise GLFW
 	if (!glfwInit()) {
@@ -73,7 +75,6 @@ static void finalize() {
 	glfwTerminate();
 }
 
-
 int main() {
 	GLFWwindow* window;
 	initialize(window);
@@ -89,39 +90,42 @@ int main() {
 	// List imports
 	for (auto& i : assets) {
 		auto& key = i.first; auto& val = i.second;
-		fprintf(stdout, "<(%d, %d), (%d, %d, %d, %d, %d, %d, %s, %s)>\n",
-			key.major_type, key.minor_type,
-			val.vertex_array_id, val.vertex_array_size, val.vertex_id, val.texcoord_id, val.normal_id, val.texture_id, val.major_name.c_str(), val.minor_name.c_str());
+		std::cout
+			<< "< ("
+			<< key.major_type << ", " << key.minor_type
+			<< "), ("
+			<< val.vertex_array_id << ", " << val.vertex_array_size << ", "
+			<< val.vertex_id << ", " << val.texcoord_id << ", " << val.normal_id << ", " << val.texture_id << ", " 
+			<< val.major_name.c_str() << ", " << val.minor_name.c_str() << ", " 
+			<< val.x_max << ", " << val.x_min << ", " << val.y_max << ", " << val.y_min << ", " << val.z_max << ", " << val.z_min
+			<< ") >\n";
 	}
 
 	map_t map;
 	map.bind_assets(&assets);
-	map.generate(10, 700);
+	map.generate(11, 700);
 
 	camera_t cam;
 	cam.bind_map(&map);
-	cam.set_pos_from_inst(glm::vec3(4.0, -6.0, 7.0));
-	cam.proj_ortho();
+	// ortho setting
 
 	double last_t = 0.0f; 
 	do {
-		float curr_t = glfwGetTime();
+		double curr_t = glfwGetTime();
 		DELTA_T = float(curr_t - last_t);
 		last_t = curr_t;
 		glfwPollEvents();
 		
 		map.player_keyinput_move(window);
-		//cam.keyboard_moving(window);
-		//cam.look_anywhere_mouse(window);
-		cam.look_player();
-		// camera position and view direction by key/mouse input
-		cam.place_camera(shader_id);
-		
 		map.update_vehicle();
+		map.dead_check();
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shader_id.shader);
 		// draw
+		cam.change_proj(window);
+		cam.look_target(window);
+		cam.place_camera(shader_id);
 		map.draw(shader_id);
 		//map.print();
 

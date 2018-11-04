@@ -41,6 +41,12 @@ asset_value_t::asset_value_t(asset_value_t&& other) {
 	this->vertex_array_size = other.vertex_array_size;
 	this->major_name = other.major_name;
 	this->minor_name = other.minor_name;
+	this->x_max = other.x_max;
+	this->x_min = other.x_min;
+	this->y_max = other.y_max;
+	this->y_min = other.y_min;
+	this->z_max = other.z_max;
+	this->z_min = other.z_min;
 }
 
 asset_value_t& asset_value_t::operator=(asset_value_t&& other) {
@@ -87,7 +93,7 @@ void asset_value_t::import(
 		return;
 	}
 
-	this->vertex_array_size = vertex.size();
+	this->vertex_array_size = (GLuint)vertex.size();
 
 	glBindVertexArray(this->vertex_array_id);
 
@@ -133,6 +139,17 @@ void asset_value_t::import(
 	this->major_name = major_name;
 	this->minor_name = minor_name;
 
+	auto x_result = std::minmax_element(vertex.begin(), vertex.end(), [&](glm::vec3 &a, glm::vec3 &b) { return a.x > b.x; });
+	this->x_max = x_result.first->x;
+	this->x_min = x_result.second->x;
+
+	auto y_result = std::minmax_element(vertex.begin(), vertex.end(), [&](glm::vec3 &a, glm::vec3 &b) { return a.y > b.y; });
+	this->y_max = y_result.first->y;
+	this->y_min = y_result.second->y;
+
+	auto z_result = std::minmax_element(vertex.begin(), vertex.end(), [&](glm::vec3 &a, glm::vec3 &b) { return a.z > b.z; });
+	this->z_max = z_result.first->z;
+	this->z_min = z_result.second->z;
 }
 
 bool operator<(asset_key_t const& left, asset_key_t const& right) {

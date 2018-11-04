@@ -18,6 +18,7 @@ public:
 	GLuint vertex_id, texcoord_id, normal_id; // VBO IDs
 	GLuint texture_id; // Texture Buffer IDs
 	std::string major_name, minor_name;
+	float x_max, x_min, y_max, y_min, z_max, z_min; // for collision box
 
 	asset_value_t();
 	asset_value_t(const asset_value_t&) = delete;

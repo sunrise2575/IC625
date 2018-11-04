@@ -65,6 +65,8 @@ private:
 	void make_road();
 	void make_player();
 	void find_major_and_minor_max();
+	bool is_player_dead(instance_t& opponent);
+	void player_return_to_start();
 public:
 	map_t();
 	map_t(const map_t&) = delete;
@@ -77,6 +79,7 @@ public:
 	void generate(const int x, const int y);
 	void player_keyinput_move(GLFWwindow *&window);
 	void update_vehicle();
+	void dead_check();
 	void draw(const shader_id_t& shader_id);
 };
 
