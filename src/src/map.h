@@ -8,6 +8,7 @@
 
 #include "global_var.h"
 #include "instance.h"
+#include "scene_graph.h"
 
 class camera_t;
 
@@ -34,7 +35,8 @@ private:
 	unsigned int x, y;
 
 	// player
-	instance_t player;
+	//instance_t player;
+	scene_graph_t player;
 	unsigned int player_major;
 	int player_x, player_y;
 	key_state_t kstate;

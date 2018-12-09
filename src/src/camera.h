@@ -4,7 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <memory>
-#include "instance.h"
+#include "scene_graph.h"
+//#include "instance.h"
 #include "shader.h"
 
 class map_t;
@@ -19,7 +20,8 @@ private:
 
 	// bind
 	map_t* map;
-	instance_t* target;
+	//instance_t* target;
+	scene_graph_t* target;
 	glm::vec3 pos_from_target;
 
 	float h_angle, v_angle; // camera angle

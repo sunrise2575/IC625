@@ -105,7 +105,6 @@ int main() {
 
 	camera_t cam;
 	cam.bind_map(&map);
-	// ortho setting
 
 	double last_t = 0.0f; 
 	do {

@@ -87,8 +87,9 @@ void map_t::find_major_and_minor_max() {
 
 void map_t::make_player() {
 	this->player.asset(asset_key_t{ this->player_major, 1 });
-	this->player.v_trans_rel(0, 0, 0.5f);
-	this->player.v_scale(0.8f, 0.8f, 0.8f);
+	this->player.create_humanoid();
+	//this->player.v_trans_rel(0, 0, GRID_SIZE);
+	//this->player.v_scale(0.8f, 0.8f, 0.8f);
 	this->player_return_to_start();
 }
 

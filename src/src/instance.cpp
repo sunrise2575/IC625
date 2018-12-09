@@ -5,13 +5,14 @@
 instance_t::instance_t() {
 	this->v_trans(0, 0, 0);
 	this->v_scale(1, 1, 1);
-	this->_m_rot = glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0))
-		* glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	this->m_scale(glm::scale(glm::mat4(1.0), this->v_scale()));
+	this->m_trans(glm::translate(glm::mat4(1.0), this->v_trans()));
+	this->m_rot(glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0))
+		* glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0)));
 }
 
 instance_t::instance_t(const instance_t& other) {
 	this->_asset = other._asset;
-
 	this->_v_trans = other._v_trans;
 	this->_m_trans = other._m_trans;
 	this->_v_scale = other._v_scale;

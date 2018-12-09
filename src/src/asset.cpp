@@ -67,6 +67,12 @@ asset_value_t& asset_value_t::operator=(asset_value_t&& other) {
 		this->vertex_array_size = other.vertex_array_size;
 		this->major_name = other.major_name;
 		this->minor_name = other.minor_name;
+		this->x_max = other.x_max;
+		this->x_min = other.x_min;
+		this->y_max = other.y_max;
+		this->y_min = other.y_min;
+		this->z_max = other.z_max;
+		this->z_min = other.z_min;
 	}
 
 	return *this;
