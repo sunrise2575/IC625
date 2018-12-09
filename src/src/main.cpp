@@ -15,8 +15,6 @@
 #include "map.h"
 #include "global_var.h"
 
-#define __ORTHO false 
-
 static void initialize(GLFWwindow *&window) {
 	// Initialise GLFW
 	if (!glfwInit()) {

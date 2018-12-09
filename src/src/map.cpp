@@ -24,7 +24,6 @@ static bool random_binary(const float probability) {
 
 float map_t::grid_x(int x) {
 	return GRID_SIZE * x;
-	
 }
 
 float map_t::grid_y(int y) {
@@ -87,13 +86,14 @@ void map_t::find_major_and_minor_max() {
 }
 
 void map_t::make_player() {
-	this->player.assign_asset(asset_key_t{ this->player_major, 1 });
-	this->player.scale(glm::vec3(0.8, 0.8, 0.8));
+	this->player.asset(asset_key_t{ this->player_major, 1 });
+	this->player.v_trans_rel(0, 0, 0.5f);
+	this->player.v_scale(0.8f, 0.8f, 0.8f);
 	this->player_return_to_start();
 }
 
 void map_t::player_return_to_start() {
-	this->player.place(glm::vec3(this->grid_x(this->x / 2), this->grid_y(0), 0.0));
+	this->player.v_trans(this->grid_x(this->x / 2), this->grid_y(0), this->player.v_trans().z);
 	this->player_x = this->x / 2;
 	this->player_y = 0;
 }
@@ -106,11 +106,11 @@ void map_t::make_obstacles() {
 				if (random_binary(OBSTACLE_PROB)) {
 					unsigned int minor = random_uniform_int(1, this->obstacle_minor_max);
 					instance_t tmp;
-					tmp.assign_asset(asset_key_t{ this->obstacle_major, minor });
+					tmp.asset(asset_key_t{ this->obstacle_major, minor });
 					this->obstacle_map[i][j] = true;
 					float x = this->grid_x(j);
 					float y = this->grid_y(i);
-					tmp.place(glm::vec3(x, y, 0.0));
+					tmp.v_trans(x, y, 0);
 
 					this->obstacles[i].push_back(tmp);
 				}
@@ -183,13 +183,13 @@ void map_t::generate(const int x, const int y) {
 	for (int j = 0; j < (int)this->y; j++) {
 		for (int i = 0; i < (int)this->x; i++) {
 			if (this->ground_or_road[j]) {
-				this->grounds[j][i].assign_asset(asset_key_t{ this->ground_major, 1 });
+				this->grounds[j][i].asset(asset_key_t{ this->ground_major, 1 });
 			}
 			else {
-				this->grounds[j][i].assign_asset(asset_key_t{ this->road_major, 1 });
+				this->grounds[j][i].asset(asset_key_t{ this->road_major, 1 });
 			}
-			this->grounds[j][i].scale(glm::vec3(GRID_SIZE, 0.01, GRID_SIZE));
-			this->grounds[j][i].place(glm::vec3((float)i*GRID_SIZE, (float)j*GRID_SIZE, -0.02));
+			this->grounds[j][i].v_scale(GRID_SIZE, 0.01f, GRID_SIZE);
+			this->grounds[j][i].v_trans((float)i*GRID_SIZE, (float)j*GRID_SIZE, -0.02f);
 		}
 	}
 
@@ -211,19 +211,19 @@ void map_t::update_vehicle() {
 			if (random_binary(VEHICLE_PROB)) {
 				instance_t temp;
 				if (this->road_info[i].is_direction_positive_x) {
-					temp.place(glm::vec3(this->grid_x(-1), this->grid_y(i), 0.0));
+					temp.v_trans(this->grid_x(-1), this->grid_y(i), 0.0);
 				}
 				else {
-					temp.place(glm::vec3(this->grid_x(this->x), this->grid_y(i), 0.0));
-					temp.rotate_180();
+					temp.v_trans(this->grid_x(this->x), this->grid_y(i), 0.0);
+					temp.rot_z_axis(180);
 				}
-				temp.assign_asset(this->road_info[i].asset_key);
+				temp.asset(this->road_info[i].asset_key);
 				vl.push_back(temp);
 			}
 			
 			// update movement!
 			for (auto& j : vl) {
-				j.move(glm::vec3(speed, 0, 0));
+				j.v_trans_vel(speed, 0, 0);
 			}
 		}
 	}
@@ -232,7 +232,7 @@ void map_t::update_vehicle() {
 	for (unsigned int i = 0; i < this->y; i++) { 
 		if (!this->ground_or_road[i]) {
 			while (this->vehicles[i].size() > 0) {
-				auto pos = this->vehicles[i].front().get_pos().x;
+				auto pos = this->vehicles[i].front().v_trans().x;
 				if (pos > this->grid_x(this->x + 1) || pos < this->grid_x(-2)) {
 					this->vehicles[i].pop_front();
 				}
@@ -245,14 +245,14 @@ void map_t::update_vehicle() {
 }
 
 bool map_t::is_player_dead(instance_t& opponent) {
-	asset_value_t& other = this->assets->find(opponent.get_asset_key())->second;
-	asset_value_t& player = this->assets->find(this->player.get_asset_key())->second;
+	asset_value_t& other = this->assets->find(opponent.asset())->second;
+	asset_value_t& player = this->assets->find(this->player.asset())->second;
 	
-	float player_scale = this->player.get_scale().z;
-	float other_scale = this->player.get_scale().z;
+	float player_scale = this->player.v_scale().z;
+	float other_scale = this->player.v_scale().z;
 
-	float player_pos = this->player.get_pos().x;
-	float other_pos = opponent.get_pos().x;
+	float player_pos = this->player.v_trans().x;
+	float other_pos = opponent.v_trans().x;
 
 	float player_lower = player_pos + player.z_min * player_scale;
 	float player_upper = player_pos + player.z_max * player_scale;
@@ -299,7 +299,7 @@ void map_t::player_keyinput_move(GLFWwindow *&window) {
 		// collision check
 		if (this->player_y < (int)this->y - 1) {
 			if (!this->obstacle_map[this->player_y + 1][this->player_x]) {
-				this->player.place(this->player.get_pos() + glm::vec3(0.0, GRID_SIZE, 0.0));
+				this->player.v_trans_rel(0, GRID_SIZE, 0);
 				this->player_y++;
 			}
 		}
@@ -312,7 +312,7 @@ void map_t::player_keyinput_move(GLFWwindow *&window) {
 		// collision check
 		if (this->player_y > 0) {
 			if (!this->obstacle_map[this->player_y - 1][this->player_x]) {
-				this->player.place(this->player.get_pos() + glm::vec3(0.0, -GRID_SIZE, 0.0));
+				this->player.v_trans_rel(0, -GRID_SIZE, 0);
 				this->player_y--;
 			}
 		}
@@ -325,7 +325,7 @@ void map_t::player_keyinput_move(GLFWwindow *&window) {
 		// collision check
 		if (this->player_x > 0) {
 			if (!this->obstacle_map[this->player_y][this->player_x - 1]) {
-				this->player.place(this->player.get_pos() + glm::vec3(-GRID_SIZE, 0.0, 0.0));
+				this->player.v_trans_rel(-GRID_SIZE, 0, 0);
 				this->player_x--;
 			}
 		}
@@ -338,7 +338,7 @@ void map_t::player_keyinput_move(GLFWwindow *&window) {
 		// collision check
 		if (this->player_x < (int)this->x - 1) {
 			if (!this->obstacle_map[this->player_y][this->player_x + 1]) {
-				this->player.place(this->player.get_pos() + glm::vec3(GRID_SIZE, 0.0, 0.0));
+				this->player.v_trans_rel(GRID_SIZE, 0, 0);
 				this->player_x++;
 			}
 		}

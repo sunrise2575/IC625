@@ -9,6 +9,7 @@
     <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\global_var.cpp" />
+    <ClCompile Include="src\scene_graph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h" />
@@ -18,9 +19,6 @@
     <ClInclude Include="src\map.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global_var.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\texture_fragment_shader.glsl" />
-    <None Include="src\transform_vertex_shader.glsl" />
+    <ClInclude Include="src\scene_graph.h" />
   </ItemGroup>
 </Project>

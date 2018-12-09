@@ -22,6 +22,7 @@
     <ClCompile Include="src\asset.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\global_var.cpp" />
+    <ClCompile Include="src\scene_graph.cpp" />
     <ClCompile Include="src\instance.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\map.cpp" />
@@ -32,14 +33,11 @@
     <ClInclude Include="src\asset.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global_var.h" />
+    <ClInclude Include="src\scene_graph.h" />
     <ClInclude Include="src\instance.h" />
     <ClInclude Include="src\map.h" />
     <ClInclude Include="src\object_loader.h" />
     <ClInclude Include="src\shader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\texture_fragment_shader.glsl" />
-    <None Include="src\transform_vertex_shader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

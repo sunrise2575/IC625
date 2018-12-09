@@ -48,13 +48,13 @@ void camera_t::proj_persp_first() {
 void camera_t::look_target(GLFWwindow *&window) {
 	if (this->mode != 3) {
 		float cam_x = (float(this->map->x - 1) / 2.0f * GRID_SIZE);
-		glm::vec3 target(cam_x, this->target->get_pos().y, 0.0);
+		glm::vec3 target(cam_x, this->target->v_trans().y, 0.0);
 		this->pos = target + this->pos_from_target;
 		this->view = glm::lookAt(this->pos, target, glm::vec3(0.0, 0.0, 1.0));
 	}
 	else {
 		// first person mode
-		this->pos = this->target->get_pos() + this->pos_from_target;
+		this->pos = this->target->v_trans() + this->pos_from_target;
 
 		glfwGetCursorPos(window, &this->mouse_x, &this->mouse_y);
 		glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);

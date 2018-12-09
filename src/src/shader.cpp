@@ -101,11 +101,14 @@ void shader_id_t::load_shader(const char * vertex_file_path, const char * fragme
 	glDeleteShader(FragmentShaderID);
 
 	this->shader = ProgramID;
+
+	this->trans_mat = glGetUniformLocation(this->shader, "trans_mat");
+	this->rot_mat = glGetUniformLocation(this->shader, "rot_mat");
+	this->scale_mat = glGetUniformLocation(this->shader, "scale_mat");
+
 	this->model_mat = glGetUniformLocation(this->shader, "model_mat");
 	this->view_mat = glGetUniformLocation(this->shader, "view_mat");
 	this->proj_mat = glGetUniformLocation(this->shader, "proj_mat");
-	this->scale_mat = glGetUniformLocation(this->shader, "scale_mat");
-	this->rot_mat = glGetUniformLocation(this->shader, "rot_mat");
-	this->trans_mat = glGetUniformLocation(this->shader, "trans_mat");
+
 	this->tex_sampler = glGetUniformLocation(this->shader, "texture_sampler");
 }
