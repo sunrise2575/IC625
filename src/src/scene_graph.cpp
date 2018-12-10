@@ -5,12 +5,9 @@
 scene_graph_elem_t::scene_graph_elem_t() {
 	this->v_trans(0, 0, 0);
 	this->v_scale(1, 1, 1);
+	this->m_rot(glm::mat4(1));
 	this->m_scale(glm::scale(glm::mat4(1.0), this->v_scale()));
 	this->m_trans(glm::translate(glm::mat4(1.0), this->v_trans()));
-	//this->m_rot(glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0))
-	//	* 
-	this->m_rot(glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0)));
-		
 	this->child(nullptr);
 	this->sibling(nullptr);
 }
@@ -130,6 +127,7 @@ void scene_graph_t::_draw_recursive(scene_graph_elem_t *node, const asset_kv_t &
 }
 
 void scene_graph_t::draw(const asset_kv_t &assets, const shader_id_t &shader_id) {
+	this->animation();
 	this->stack.push(glm::mat4(1.0));
 	this->_draw_recursive(this->_root, assets, shader_id);
 }
@@ -165,20 +163,38 @@ void scene_graph_t::create_humanoid() {
 
 	// set scale
 	torso.v_scale(4*UNIT, 8*UNIT, 2*UNIT);
+	torso.m_rot(glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(1, 0, 0)));
 	head.v_scale(2*UNIT, 2*UNIT, 2*UNIT);
+
 	l_u_leg.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	r_u_leg.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	l_l_leg.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	r_l_leg.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
+
 	l_u_arm.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	r_u_arm.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	l_l_arm.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 	r_l_arm.v_scale(2*UNIT, 4*UNIT, 2*UNIT);
 
-	torso.v_trans(0, 12 * UNIT, 0);
+	torso.v_trans(0, 0, 1.5*GRID_SIZE);
 	head.v_trans(0, 5*UNIT, 0);
-	l_u_leg.v_trans(0, -8 * UNIT, 0);
-	r_u_leg.v_trans(0, -8 * UNIT, 0);
+	l_u_leg.v_trans(-1*UNIT, -6*UNIT, 0);
+	r_u_leg.v_trans(1*UNIT, -6*UNIT, 0);
+	l_l_leg.v_trans(0, -4*UNIT, 0);
+	r_l_leg.v_trans(0, -4*UNIT, 0);
+	l_u_arm.v_trans(-3*UNIT, 2*UNIT, 0);
+	r_u_arm.v_trans(3*UNIT, 2*UNIT, 0);
+	l_l_arm.v_trans(0, -4*UNIT, 0);
+	r_l_arm.v_trans(0, -4*UNIT, 0);
+
+	l_u_leg.m_rot(glm::rotate(l_u_leg.m_rot(), glm::radians(22.5f), glm::vec3(1, 0, 0)));
+	l_l_leg.m_rot(glm::rotate(l_l_leg.m_rot(), glm::radians(22.5f), glm::vec3(1, 0, 0)));
+	r_u_leg.m_rot(glm::rotate(r_u_leg.m_rot(), glm::radians(-22.5f), glm::vec3(1, 0, 0)));
+	r_l_leg.m_rot(glm::rotate(r_l_leg.m_rot(), glm::radians(-22.5f), glm::vec3(1, 0, 0)));
+	l_u_arm.m_rot(glm::rotate(l_u_arm.m_rot(), glm::radians(-22.5f), glm::vec3(1, 0, 0)));
+	l_l_arm.m_rot(glm::rotate(l_l_arm.m_rot(), glm::radians(-22.5f), glm::vec3(1, 0, 0)));
+	r_u_arm.m_rot(glm::rotate(r_u_arm.m_rot(), glm::radians(22.5f), glm::vec3(1, 0, 0)));
+	r_l_arm.m_rot(glm::rotate(r_l_arm.m_rot(), glm::radians(22.5f), glm::vec3(1, 0, 0)));
 	
 	// torso 
 	torso.child(&head);
@@ -196,4 +212,44 @@ void scene_graph_t::create_humanoid() {
 	r_u_arm.child(&r_l_arm);
 
 	this->root(&this->instances.front());
+}
+
+void scene_graph_t::animation() {
+	auto& torso = this->instances[0];
+	auto& head = this->instances[1];
+	auto& l_u_leg = this->instances[2];
+	auto& l_l_leg = this->instances[3];
+	auto& r_u_leg = this->instances[4];
+	auto& r_l_leg = this->instances[5];
+	auto& l_u_arm = this->instances[6];
+	auto& l_l_arm = this->instances[7];
+	auto& r_u_arm = this->instances[8];
+	auto& r_l_arm = this->instances[9];
+
+	head.m_rot(glm::rotate(head.m_rot(), glm::radians(8.0f), glm::vec3(0, 1, 0)));
+
+	if (0 <= this->animation_count && this->animation_count < 30) {
+		l_u_leg.m_rot(glm::rotate(l_u_leg.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		l_l_leg.m_rot(glm::rotate(l_l_leg.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		r_u_leg.m_rot(glm::rotate(r_u_leg.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		r_l_leg.m_rot(glm::rotate(r_l_leg.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		l_u_arm.m_rot(glm::rotate(l_u_arm.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		l_l_arm.m_rot(glm::rotate(l_l_arm.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		r_u_arm.m_rot(glm::rotate(r_u_arm.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		r_l_arm.m_rot(glm::rotate(r_l_arm.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		this->animation_count++;
+	}
+	else if (30 <= this->animation_count && this->animation_count < 60) {
+		l_u_leg.m_rot(glm::rotate(l_u_leg.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		l_l_leg.m_rot(glm::rotate(l_l_leg.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		r_u_leg.m_rot(glm::rotate(r_u_leg.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		r_l_leg.m_rot(glm::rotate(r_l_leg.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		l_u_arm.m_rot(glm::rotate(l_u_arm.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		l_l_arm.m_rot(glm::rotate(l_l_arm.m_rot(), glm::radians(-1.5f), glm::vec3(1, 0, 0)));
+		r_u_arm.m_rot(glm::rotate(r_u_arm.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		r_l_arm.m_rot(glm::rotate(r_l_arm.m_rot(), glm::radians(1.5f), glm::vec3(1, 0, 0)));
+		this->animation_count++;
+	} else {
+		this->animation_count = 0;
+	} 
 }

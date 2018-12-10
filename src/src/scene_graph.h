@@ -7,7 +7,7 @@
 #include "instance.h"
 
 class scene_graph_elem_t : public instance_t {
-protected:
+private:
 	scene_graph_elem_t *_child, *_sibling;
 public:
 	scene_graph_elem_t();
@@ -27,6 +27,7 @@ public:
 
 class scene_graph_t {
 private:
+	int animation_count = 0;
 	asset_key_t _asset;
 
 	scene_graph_elem_t *_root;
@@ -44,6 +45,7 @@ public:
 
 	void root(const scene_graph_elem_t *root);
 	void draw(const asset_kv_t &assets, const shader_id_t &shader_id);
+	void animation();
 
 	asset_key_t asset();
 	void asset(const asset_key_t &);

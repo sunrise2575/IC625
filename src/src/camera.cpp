@@ -22,7 +22,7 @@ void camera_t::bind_map(map_t *map) {
 }
 
 void camera_t::proj_ortho() {
-	this->pos_from_target = glm::vec3(4.0, -6.0, 7.0);
+	this->pos_from_target = glm::vec3(2.0, -4.0, 5.0);
 	this->proj = glm::ortho(
 		-(float)WINDOW_WIDTH / 96.0f, (float)WINDOW_WIDTH / 96.0f,
 		-(float)WINDOW_HEIGHT / 96.0f, (float)WINDOW_HEIGHT / 96.0f,
