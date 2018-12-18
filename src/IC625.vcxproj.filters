@@ -10,6 +10,7 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\global_var.cpp" />
     <ClCompile Include="src\scene_graph.cpp" />
+    <ClCompile Include="src\light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h" />
@@ -20,5 +21,6 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\global_var.h" />
     <ClInclude Include="src\scene_graph.h" />
+    <ClInclude Include="src\light.h" />
   </ItemGroup>
 </Project>

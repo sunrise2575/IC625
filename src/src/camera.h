@@ -14,7 +14,7 @@ class camera_t {
 private:
 	// camera position, direction, right and up
 	glm::vec3 pos; 
-	glm::mat4 proj, view, model;
+	glm::mat4 proj, view;
 
 	int mode;
 
@@ -32,11 +32,15 @@ private:
 	void proj_persp_third();
 public:
 	camera_t();
-	~camera_t() {}
+	~camera_t() = default;
+	camera_t(const camera_t &) = delete;
+	camera_t(camera_t &&) = delete;
+	camera_t &operator=(const camera_t &) = delete;
+	camera_t &operator=(camera_t &&) = delete;
 
-	void bind_map(map_t *map);
+	void bind_map(const map_t *map);
 	void look_target(GLFWwindow *&window);
-	void place_camera(const shader_id_t &shader_id);
+	void place(const shader_id_t &shader_id);
 	void change_proj(GLFWwindow *&window);
 };
 

@@ -3,9 +3,11 @@
 
 struct shader_id_t {
 	GLuint shader;
-	GLuint model_mat, view_mat, proj_mat;
-	GLuint trans_mat, rot_mat, scale_mat;
-	GLuint tex_sampler;
+	struct { GLuint vertex, texture, normal, tangent, bitangent; } coord;
+	struct { GLuint proj, view, scale, rot, trans; } mat;
+	struct { GLuint texture, normap; } sampler;
+	struct { GLuint light, eye; } pos;
+	struct { GLuint ka, kd, ks, ia, id, is, shininess; } phong;
 	
 	void load_shader(const char * vertex_file_path, const char * fragment_file_path);
 };

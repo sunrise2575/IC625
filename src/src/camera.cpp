@@ -1,3 +1,4 @@
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 
@@ -11,13 +12,12 @@ camera_t::camera_t() {
 	this->mouse_speed = MOUSE_SPEED;
 	this->move_speed = PLAYER_SPEED;
 	this->target = nullptr;
-	this->model = glm::mat4(1.0);
 	this->mode = 1;
 	this->proj_ortho();
 }
 
-void camera_t::bind_map(map_t *map) {
-	this->map = map;
+void camera_t::bind_map(const map_t *map) {
+	this->map = const_cast<map_t *>(map);
 	this->target = &this->map->player;
 }
 
@@ -103,9 +103,10 @@ void camera_t::change_proj(GLFWwindow *&window) {
 	}
 }
 
-void camera_t::place_camera(const shader_id_t &shader_id)
+void camera_t::place(const shader_id_t &shader_id)
 {
-	glUniformMatrix4fv(shader_id.proj_mat, 1, GL_FALSE, &this->proj[0][0]);
-	glUniformMatrix4fv(shader_id.view_mat, 1, GL_FALSE, &this->view[0][0]);
-	glUniformMatrix4fv(shader_id.model_mat, 1, GL_FALSE, &this->model[0][0]);
+	glUniform3fv(shader_id.pos.eye, 1, glm::value_ptr(this->pos));
+	glUniformMatrix4fv(shader_id.mat.proj, 1, GL_FALSE, glm::value_ptr(this->proj));
+	glUniformMatrix4fv(shader_id.mat.view, 1, GL_FALSE, glm::value_ptr(this->view));
+
 }

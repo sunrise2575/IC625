@@ -12,6 +12,7 @@
 #include "asset.h"
 #include "camera.h"
 #include "instance.h"
+#include "light.h"
 #include "map.h"
 #include "global_var.h"
 
@@ -55,7 +56,7 @@ static void initialize(GLFWwindow *&window) {
 	glfwSwapInterval(1); // vsync
 
 	// Background color
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -77,13 +78,13 @@ int main() {
 	GLFWwindow* window;
 	initialize(window);
 
-	// Import assets
-	asset_kv_t assets;
-	import_assets_initially(assets);
-
 	// Import shaders
 	shader_id_t shader_id;
-	shader_id.load_shader("transform_vertex_shader.glsl", "texture_fragment_shader.glsl");
+	shader_id.load_shader("vshader.glsl", "fshader.glsl");
+
+	// Import assets
+	asset_kv_t assets;
+	import_assets_initially(assets, shader_id);
 
 	// List imports
 	for (auto& i : assets) {
@@ -93,7 +94,7 @@ int main() {
 			<< key.major_type << ", " << key.minor_type
 			<< "), ("
 			<< val.vertex_array_id << ", " << val.vertex_array_size << ", "
-			<< val.vertex_id << ", " << val.texcoord_id << ", " << val.normal_id << ", " << val.texture_id << ", " 
+			<< val.vertex_id << ", " << val.texcoord_id << ", " << val.normal_id << ", " << val.texture_id << ", "  << val.normal_map_id << ", "
 			<< val.major_name.c_str() << ", " << val.minor_name.c_str() << ", " 
 			<< val.x_max << ", " << val.x_min << ", " << val.y_max << ", " << val.y_min << ", " << val.z_max << ", " << val.z_min
 			<< ") >\n";
@@ -105,6 +106,13 @@ int main() {
 
 	camera_t cam;
 	cam.bind_map(&map);
+
+	light_t light;
+	light.bind_map(&map);
+	light.pos_from_target(0, GRID_SIZE, 2 * GRID_SIZE, 1);
+	light.Ia(1, 1, 1, 1);
+	light.Id(1, 1, 1, 1);
+	light.Is(1, 1, 1, 1);
 
 	double last_t = 0.0f; 
 	do {
@@ -122,9 +130,11 @@ int main() {
 		// draw
 		cam.change_proj(window);
 		cam.look_target(window);
-		cam.place_camera(shader_id);
+		cam.place(shader_id);
+
+		light.place(shader_id);
+
 		map.draw(shader_id);
-		//map.print();
 
 		glfwSwapBuffers(window);
 	} while (

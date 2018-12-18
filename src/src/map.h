@@ -11,6 +11,7 @@
 #include "scene_graph.h"
 
 class camera_t;
+class light_t;
 
 struct road_info_t {
 	asset_key_t asset_key;
@@ -28,6 +29,7 @@ struct key_state_t {
 class map_t {
 private:
 	friend camera_t;
+	friend light_t;
 	// asset
 	asset_kv_t* assets;
 

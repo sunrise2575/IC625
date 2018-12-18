@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <string>
+#include <sstream>
+#include <fstream>
 
 #include "object_loader.h"
 
@@ -45,7 +47,6 @@ bool load_object(
 			temp_normals.push_back(normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
-			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
 				&vertexIndex[0], &uvIndex[0], &normalIndex[0],
@@ -94,5 +95,56 @@ bool load_object(
 
 	}
 	fclose(file);
+	return true;
+}
+
+bool load_KaKdKsIllum(const char *path, glm::vec4 &Ka, glm::vec4 &Kd, glm::vec4 &Ks, float &illum) {
+	std::ifstream file(path);
+	bool flag[4];
+	memset(flag, false, sizeof(flag));
+
+	if (file) {
+		std::string line;
+		std::string garbage;
+		while (std::getline(file, line)) {
+			std::istringstream iss(line);
+			if (line[0] == '\t') {
+				if (line[1] == 'K') {
+					if (line[2] == 'a') {
+						iss >> garbage >> Ka.x >> Ka.y >> Ka.z;
+						Ka.w = 1;
+						flag[0] = true;
+					}
+					else if (line[2] == 'd') {
+						iss >> garbage >> Kd.x >> Kd.y >> Kd.z;
+						Kd.w = 1;
+						flag[1] = true;
+
+					}
+					else if (line[2] == 's') {
+						iss >> garbage >> Ks.x >> Ks.y >> Ks.z;
+						Ks.w = 1;
+						flag[2] = true;
+					}
+				}
+				else if (line[1] == 'i') {
+					float tmp = 0;
+					iss >> garbage >> tmp;
+					if (garbage == "illum") {
+						illum = tmp;
+						flag[3] = true;
+					}
+				}
+			}
+		}
+	}
+	file.close();
+
+	for (auto i = 0; i < 4; i++) {
+		if (!flag[i]) {
+			return false;
+		}
+	}
+
 	return true;
 }

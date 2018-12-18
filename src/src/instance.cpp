@@ -1,5 +1,6 @@
 #include "instance.h"
 #include "global_var.h"
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 instance_t::instance_t() {
@@ -118,14 +119,24 @@ void instance_t::draw(const asset_kv_t& assets, const shader_id_t& shader_id) {
 	const auto& data = assets.find(this->_asset)->second;
 	
 	// Apply Transform
-	glUniformMatrix4fv(shader_id.scale_mat, 1, GL_FALSE, &this->_m_scale[0][0]);
-	glUniformMatrix4fv(shader_id.rot_mat, 1, GL_FALSE, &this->_m_rot[0][0]);
-	glUniformMatrix4fv(shader_id.trans_mat, 1, GL_FALSE, &this->_m_trans[0][0]);
+	glUniformMatrix4fv(shader_id.mat.scale, 1, GL_FALSE, glm::value_ptr(this->m_scale()));
+	glUniformMatrix4fv(shader_id.mat.rot, 1, GL_FALSE, glm::value_ptr(this->m_rot()));
+	glUniformMatrix4fv(shader_id.mat.trans, 1, GL_FALSE, glm::value_ptr(this->m_trans()));
+
+	glUniform4fv(shader_id.phong.ka, 1, glm::value_ptr(data.Ka));
+	glUniform4fv(shader_id.phong.kd, 1, glm::value_ptr(data.Kd));
+	glUniform4fv(shader_id.phong.ks, 1, glm::value_ptr(data.Ks));
+	glUniform1f(shader_id.phong.shininess, data.Illum);
 
 	// Apply Texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, data.texture_id);
-	glUniform1i(shader_id.tex_sampler, 0);
+	glUniform1i(shader_id.sampler.texture, 0);
+
+	// Apply normal map
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, data.normal_map_id);
+	glUniform1i(shader_id.sampler.normap, 1);
 
 	// Apply Vertex Info
 	glBindVertexArray(data.vertex_array_id);

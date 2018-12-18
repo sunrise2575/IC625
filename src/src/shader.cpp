@@ -102,13 +102,34 @@ void shader_id_t::load_shader(const char * vertex_file_path, const char * fragme
 
 	this->shader = ProgramID;
 
-	this->trans_mat = glGetUniformLocation(this->shader, "trans_mat");
-	this->rot_mat = glGetUniformLocation(this->shader, "rot_mat");
-	this->scale_mat = glGetUniformLocation(this->shader, "scale_mat");
+	// coordinations
+	this->coord.vertex = glGetAttribLocation(this->shader, "coord.vertex");
+	this->coord.texture = glGetAttribLocation(this->shader, "coord.texture");
+	this->coord.normal = glGetAttribLocation(this->shader, "coord.normal");
+	this->coord.tangent = glGetAttribLocation(this->shader, "coord.tangent");
+	this->coord.bitangent = glGetAttribLocation(this->shader, "coord.bitangent");
 
-	this->model_mat = glGetUniformLocation(this->shader, "model_mat");
-	this->view_mat = glGetUniformLocation(this->shader, "view_mat");
-	this->proj_mat = glGetUniformLocation(this->shader, "proj_mat");
+	// matrices
+	this->mat.trans = glGetUniformLocation(this->shader, "mat.trans");
+	this->mat.rot = glGetUniformLocation(this->shader, "mat.rot");
+	this->mat.scale = glGetUniformLocation(this->shader, "mat.scale");
+	this->mat.view = glGetUniformLocation(this->shader, "mat.view");
+	this->mat.proj = glGetUniformLocation(this->shader, "mat.proj");
 
-	this->tex_sampler = glGetUniformLocation(this->shader, "texture_sampler");
+	// phong variables
+	this->phong.ka = glGetUniformLocation(this->shader, "phong.ka");
+	this->phong.kd = glGetUniformLocation(this->shader, "phong.kd");
+	this->phong.ks = glGetUniformLocation(this->shader, "phong.ks");
+	this->phong.ia = glGetUniformLocation(this->shader, "phong.ia");
+	this->phong.id = glGetUniformLocation(this->shader, "phong.id");
+	this->phong.is = glGetUniformLocation(this->shader, "phong.is");
+	this->phong.shininess = glGetUniformLocation(this->shader, "phong.shininess");
+
+	// positions
+	this->pos.light = glGetUniformLocation(this->shader, "pos.light");
+	this->pos.eye = glGetUniformLocation(this->shader, "pos.eye");
+
+	// sampler
+	this->sampler.texture = glGetUniformLocation(this->shader, "sampler.texture");
+	this->sampler.normap = glGetUniformLocation(this->shader, "sampler.normap");
 }

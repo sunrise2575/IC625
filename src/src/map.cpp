@@ -250,7 +250,7 @@ bool map_t::is_player_dead(instance_t& opponent) {
 	asset_value_t& player = this->assets->find(this->player.asset())->second;
 	
 	float player_scale = this->player.v_scale().z;
-	float other_scale = this->player.v_scale().z;
+	float other_scale = opponent.v_scale().z;
 
 	float player_pos = this->player.v_trans().x;
 	float other_pos = opponent.v_trans().x;
